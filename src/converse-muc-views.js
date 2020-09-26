@@ -13,7 +13,7 @@ import ModeratorToolsModal from "./modals/moderator-tools.js";
 import RoomDetailsModal from 'modals/muc-details.js';
 import log from "@converse/headless/log";
 import tpl_chatroom from "templates/chatroom.js";
-import tpl_chatroom_bottom_panel from "templates/chatroom_bottom_panel.html";
+import tpl_muc_bottom_panel from "templates/muc_bottom_panel.js";
 import tpl_chatroom_destroyed from "templates/chatroom_destroyed.html";
 import tpl_chatroom_disconnect from "templates/chatroom_disconnect.html";
 import tpl_chatroom_head from "templates/chatroom_head.js";
@@ -21,7 +21,7 @@ import tpl_chatroom_nickname_form from "templates/chatroom_nickname_form.html";
 import tpl_muc_config_form from "templates/muc_config_form.js";
 import tpl_muc_password_form from "templates/muc_password_form.js";
 import tpl_muc_sidebar from "templates/muc_sidebar.js";
-import tpl_room_panel from "templates/room_panel.html";
+import tpl_room_panel from "templates/room_panel.js";
 import tpl_spinner from "templates/spinner.js";
 import { ChatBoxView } from "./converse-chatview";
 import { Model } from '@converse/skeletor/src/model.js';
@@ -269,12 +269,11 @@ export const ChatRoomView = ChatBoxView.extend({
         render(tpl, this.el.querySelector('.chat-head-chatroom'));
     },
 
-
     renderBottomPanel () {
         const container = this.el.querySelector('.bottom-panel');
         const entered = this.model.session.get('connection_status') === converse.ROOMSTATUS.ENTERED;
         const can_edit = entered && !(this.model.features.get('moderated') && this.model.getOwnRole() === 'visitor');
-        container.innerHTML = tpl_chatroom_bottom_panel({__, can_edit, entered});
+        render(tpl_muc_bottom_panel({ can_edit, entered }), container);
         if (entered && can_edit) {
             this.renderMessageForm();
             this.initMentionAutoComplete();
@@ -1354,13 +1353,12 @@ export const RoomsPanel = View.extend({
         'click a.controlbox-heading__btn.show-list-muc-modal': 'showMUCListModal'
     },
 
-    render () {
-        this.el.innerHTML = tpl_room_panel({
+    toHTML () {
+        return tpl_room_panel({
             'heading_chatrooms': __('Groupchats'),
             'title_new_room': __('Add a new groupchat'),
             'title_list_rooms': __('Query for groupchats')
         });
-        return this;
     },
 
     showAddRoomModal (ev) {
