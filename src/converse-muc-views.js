@@ -15,7 +15,7 @@ import log from "@converse/headless/log";
 import tpl_chatroom from "templates/chatroom.js";
 import tpl_muc_bottom_panel from "templates/muc_bottom_panel.js";
 import tpl_muc_destroyed from "templates/muc_destroyed.js";
-import tpl_chatroom_disconnect from "templates/chatroom_disconnect.html";
+import tpl_muc_disconnect from "templates/muc_disconnect.js";
 import tpl_chatroom_head from "templates/chatroom_head.js";
 import tpl_chatroom_nickname_form from "templates/chatroom_nickname_form.html";
 import tpl_muc_config_form from "templates/muc_config_form.js";
@@ -1243,7 +1243,7 @@ export const ChatRoomView = ChatBoxView.extend({
             'disconnection_actor': undefined
         });
         const container = this.el.querySelector('.disconnect-container');
-        container.innerHTML = tpl_chatroom_disconnect({messages})
+        render(tpl_muc_disconnect(messages), container);
         u.showElement(container);
     },
 
