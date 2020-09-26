@@ -17,7 +17,7 @@ import tpl_muc_bottom_panel from "templates/muc_bottom_panel.js";
 import tpl_muc_destroyed from "templates/muc_destroyed.js";
 import tpl_muc_disconnect from "templates/muc_disconnect.js";
 import tpl_chatroom_head from "templates/chatroom_head.js";
-import tpl_chatroom_nickname_form from "templates/chatroom_nickname_form.html";
+import tpl_muc_nickname_form from "templates/muc_nickname_form.js";
 import tpl_muc_config_form from "templates/muc_config_form.js";
 import tpl_muc_password_form from "templates/muc_password_form.js";
 import tpl_muc_sidebar from "templates/muc_sidebar.js";
@@ -1103,29 +1103,21 @@ export const ChatRoomView = ChatBoxView.extend({
      * @method _converse.ChatRoomView#renderNicknameForm
      */
     renderNicknameForm () {
-        const heading = api.settings.get('muc_show_logs_before_join') ?
-            __('Choose a nickname to enter') :
-            __('Please choose your nickname');
-
-        const html = tpl_chatroom_nickname_form(Object.assign({
-            heading,
-            'label_nickname': __('Nickname'),
-            'label_join': __('Enter groupchat'),
-        }, this.model.toJSON()));
-
+        const tmp_result = tpl_muc_nickname_form(this.model.get('nick'));
         if (api.settings.get('muc_show_logs_before_join')) {
             const container = this.el.querySelector('.muc-bottom-panel');
-            container.innerHTML = html;
+            render(container, tmp_result);
             u.addClass('muc-bottom-panel--nickname', container);
         } else {
             const form = this.el.querySelector('.muc-nickname-form');
+            const form_el = u.getElementFromTemplateResult(tmp_result);
             if (form) {
                 sizzle('.spinner', this.el).forEach(u.removeElement);
-                form.outerHTML = html;
+                form.outerHTML = form_el.outerHTML;
             } else {
                 this.hideChatRoomContents();
                 const container = this.el.querySelector('.chatroom-body');
-                container.insertAdjacentHTML('beforeend', html);
+                container.insertAdjacentElement('beforeend', form_el);
             }
         }
         u.safeSave(this.model.session, {'connection_status': converse.ROOMSTATUS.NICKNAME_REQUIRED});
