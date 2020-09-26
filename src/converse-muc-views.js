@@ -14,7 +14,7 @@ import RoomDetailsModal from 'modals/muc-details.js';
 import log from "@converse/headless/log";
 import tpl_chatroom from "templates/chatroom.js";
 import tpl_muc_bottom_panel from "templates/muc_bottom_panel.js";
-import tpl_chatroom_destroyed from "templates/chatroom_destroyed.html";
+import tpl_muc_destroyed from "templates/muc_destroyed.js";
 import tpl_chatroom_disconnect from "templates/chatroom_disconnect.html";
 import tpl_chatroom_head from "templates/chatroom_head.js";
 import tpl_chatroom_nickname_form from "templates/chatroom_nickname_form.html";
@@ -1206,11 +1206,7 @@ export const ChatRoomView = ChatBoxView.extend({
             'moved_jid': undefined
         });
         const container = this.el.querySelector('.disconnect-container');
-        container.innerHTML = tpl_chatroom_destroyed({
-            '__':__,
-            'jid': moved_jid,
-            'reason': reason ? `"${reason}"` : null
-        });
+        render(tpl_muc_destroyed(moved_jid, reason), container);
         const switch_el = container.querySelector('a.switch-chat');
         if (switch_el) {
             switch_el.addEventListener('click', async ev => {
